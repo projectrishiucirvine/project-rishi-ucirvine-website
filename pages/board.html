@@ -93,111 +93,8 @@
   <hr>
   <section class="section is-medium">
     <div class="container">
-      <div class="committee-row">
-        <h2 class="title is-3 has-text-centered committee-title">Committee Row 1</h2>
-        <div class="columns is-multiline is-centered">
-          <div class="column is-one-quarter">
-            <div class="card">
-              <div class="card-image">
-                <figure class="image is-square is-skeleton">
-                </figure>
-              </div>
-              <div class="card-content">
-                <div class="content has-text-centered">
-                  <h3 class="title is-5">Board Member Name</h3>
-                  <p class="has-text-grey">Position Title</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="column is-one-quarter">
-            <div class="card">
-              <div class="card-image">
-                <figure class="image is-square is-skeleton">
-                </figure>
-              </div>
-              <div class="card-content">
-                <div class="content has-text-centered">
-                  <h3 class="title is-5">Board Member Name</h3>
-                  <p class="has-text-grey">Position Title</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="committee-row">
-        <h2 class="title is-3 has-text-centered committee-title">Committee Row 2</h2>
-        <div class="columns is-multiline is-centered">
-          <div class="column is-one-quarter">
-            <div class="card">
-              <div class="card-image">
-                <figure class="image is-square is-skeleton">
-                </figure>
-              </div>
-              <div class="card-content">
-                <div class="content has-text-centered">
-                  <h3 class="title is-5">Board Member Name</h3>
-                  <p class="has-text-grey">Position Title</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="column is-one-quarter">
-            <div class="card">
-              <div class="card-image">
-                <figure class="image is-square is-skeleton">
-                </figure>
-              </div>
-              <div class="card-content">
-                <div class="content has-text-centered">
-                  <h3 class="title is-5">Board Member Name</h3>
-                  <p class="has-text-grey">Position Title</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="committee-row">
-        <h2 class="title is-3 has-text-centered committee-title">Committee Row 3</h2>
-        <div class="columns is-multiline is-centered">
-          <div class="column is-one-quarter">
-            <div class="card">
-              <div class="card-image">
-                <figure class="image is-square is-skeleton">
-                </figure>
-              </div>
-              <div class="card-content">
-                <div class="content has-text-centered">
-                  <h3 class="title is-5">Board Member Name</h3>
-                  <p class="has-text-grey">Position Title</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="column is-one-quarter">
-            <div class="card">
-              <div class="card-image">
-                <figure class="image is-square is-skeleton">
-                </figure>
-              </div>
-              <div class="card-content">
-                <div class="content has-text-centered">
-                  <h3 class="title is-5">Board Member Name</h3>
-                  <p class="has-text-grey">Position Title</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <h2 class="title is-3 has-text-centered committee-title">Meet the Board</h2>
+      <div id="board-grid" class="columns is-multiline is-centered"></div>
     </div>
   </section>
 
@@ -221,6 +118,177 @@
     </div>
   </footer>
   <script src="../navbar.js"></script>
+  <script>
+    (function () {
+      const files = [
+        'Aditya Sarkar.jpg',
+        'Ankita Katarkar.jpg',
+        'Disha Patel.jpeg',
+        'Inaya Jaffer.jpeg',
+        'Mahika Shah.jpg',
+        'Ria Gupta.jpg',
+        'Rithika Yalla.jpg',
+        'Sanika Kolur.jpg',
+        'Shreeya Khairnar.jpg'
+      ];
+
+      const titles = {
+        'rithika': 'Youth Education Committee Co-Lead',
+        'shreeya': 'Youth Education Committee Co-Lead',
+        'ria': 'Reproductive Health Committee Co-Lead',
+        'ankita': 'Clinical Health Committee Co-Lead',
+        'disha': 'Clinical Health Committee Co-Lead',
+        'sanika': 'Director',
+        'mahika': 'Outreach',
+        'inaya': 'Outreach',
+        'aditya': 'Outreach'
+      };
+
+      // desired row order
+      const orderedRoles = [
+        'Director',
+        'Youth Education Committee Co-Lead',
+        'Reproductive Health Committee Co-Lead',
+        'Clinical Health Committee Co-Lead',
+        'Outreach'
+      ];
+
+      const container = document.getElementById('board-grid');
+      if (!container) return;
+
+      // group files by role
+      const groups = {};
+      files.forEach(filename => {
+        const name = filename.split('.').slice(0, -1).join('.');
+        const firstName = name.split(' ')[0].toLowerCase();
+        const role = titles[firstName] || 'Other';
+        if (!groups[role]) groups[role] = [];
+        groups[role].push({ filename, name });
+      });
+
+      // create a row per role in the desired order
+      orderedRoles.forEach(role => {
+        const members = groups[role];
+        if (!members || members.length === 0) return;
+
+        const rowWrap = document.createElement('div');
+        rowWrap.className = 'committee-row';
+
+        const rowTitle = document.createElement('h2');
+        rowTitle.className = 'title is-4 has-text-centered committee-title';
+        rowTitle.textContent = role;
+        rowWrap.appendChild(rowTitle);
+
+        const cols = document.createElement('div');
+        cols.className = 'columns is-multiline is-centered';
+
+        members.forEach(member => {
+          const col = document.createElement('div');
+          col.className = 'column is-one-quarter';
+
+          const card = document.createElement('div');
+          card.className = 'card';
+
+          const cardImage = document.createElement('div');
+          cardImage.className = 'card-image';
+
+          const figure = document.createElement('figure');
+          figure.className = 'image';
+
+          const img = document.createElement('img');
+          img.src = '../' + encodeURI('drive-download-20260522T042656Z-3-001/' + member.filename);
+          img.alt = member.name;
+          img.style.width = '100%';
+          img.style.height = 'auto';
+          img.style.objectFit = 'cover';
+
+          figure.appendChild(img);
+          cardImage.appendChild(figure);
+          card.appendChild(cardImage);
+
+          const cardContent = document.createElement('div');
+          cardContent.className = 'card-content';
+          const content = document.createElement('div');
+          content.className = 'content has-text-centered';
+
+          const h3 = document.createElement('h3');
+          h3.className = 'title is-5';
+          h3.textContent = member.name;
+          content.appendChild(h3);
+
+          const p = document.createElement('p');
+          p.className = 'has-text-grey';
+          p.textContent = role;
+          content.appendChild(p);
+
+          cardContent.appendChild(content);
+          card.appendChild(cardContent);
+
+          col.appendChild(card);
+          cols.appendChild(col);
+        });
+
+        rowWrap.appendChild(cols);
+        container.appendChild(rowWrap);
+      });
+
+      // append any uncategorized roles after
+      Object.keys(groups).forEach(role => {
+        if (orderedRoles.includes(role)) return;
+        const members = groups[role];
+        if (!members) return;
+
+        const rowWrap = document.createElement('div');
+        rowWrap.className = 'committee-row';
+        const rowTitle = document.createElement('h2');
+        rowTitle.className = 'title is-4 has-text-centered committee-title';
+        rowTitle.textContent = role;
+        rowWrap.appendChild(rowTitle);
+
+        const cols = document.createElement('div');
+        cols.className = 'columns is-multiline is-centered';
+
+        members.forEach(member => {
+          const col = document.createElement('div');
+          col.className = 'column is-one-quarter';
+          const card = document.createElement('div');
+          card.className = 'card';
+          const cardImage = document.createElement('div');
+          cardImage.className = 'card-image';
+          const figure = document.createElement('figure');
+          figure.className = 'image';
+          const img = document.createElement('img');
+          img.src = '../' + encodeURI('drive-download-20260522T042656Z-3-001/' + member.filename);
+          img.alt = member.name;
+          img.style.width = '100%';
+          img.style.height = 'auto';
+          img.style.objectFit = 'cover';
+          figure.appendChild(img);
+          cardImage.appendChild(figure);
+          card.appendChild(cardImage);
+          const cardContent = document.createElement('div');
+          cardContent.className = 'card-content';
+          const content = document.createElement('div');
+          content.className = 'content has-text-centered';
+          const h3 = document.createElement('h3');
+          h3.className = 'title is-5';
+          h3.textContent = member.name;
+          content.appendChild(h3);
+          const p = document.createElement('p');
+          p.className = 'has-text-grey';
+          p.textContent = role;
+          content.appendChild(p);
+          cardContent.appendChild(content);
+          card.appendChild(cardContent);
+          col.appendChild(card);
+          cols.appendChild(col);
+        });
+
+        rowWrap.appendChild(cols);
+        container.appendChild(rowWrap);
+      });
+    })();
+  </script>
 </body>
 
 </html>
