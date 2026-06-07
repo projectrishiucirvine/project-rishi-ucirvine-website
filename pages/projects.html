@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Committees — Project Rishi at UCI</title>
+  <title>Projects — Project Rishi at UCI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
@@ -36,33 +36,18 @@
       overflow-x: hidden;
     }
 
-    /* WATER CANVAS */
-    #water-canvas {
-      position: fixed;
-      top:0; left:0; width:100%; height:100%;
-      pointer-events:none; z-index:0;
-    }
+    #water-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
 
-    /* RIPPLE */
     .ripple  { position:fixed; border-radius:50%; border:1px solid rgba(107,184,232,0.4);  pointer-events:none; z-index:1; transform:translate(-50%,-50%) scale(0); animation:rippleOut 1.4s var(--ease) forwards; }
     .ripple2 { position:fixed; border-radius:50%; border:1px solid rgba(107,184,232,0.18); pointer-events:none; z-index:1; transform:translate(-50%,-50%) scale(0); animation:rippleOut 2s 0.2s var(--ease) forwards; }
     @keyframes rippleOut { to { transform:translate(-50%,-50%) scale(1); opacity:0; } }
 
-    /* CURSOR */
     .cursor      { width:8px;  height:8px;  background:var(--blue-gleam); border-radius:50%; position:fixed; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
     .cursor-ring { width:30px; height:30px; border:1px solid var(--blue-gleam); border-radius:50%; position:fixed; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); opacity:0.5; transition:width .3s,height .3s,opacity .2s; }
     body.hovering .cursor-ring { width:48px; height:48px; opacity:0.2; }
 
     /* NAVBAR */
-    .navbar {
-      background: rgba(5,8,16,0.82);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 3rem; height: 70px;
-      position: fixed; top:0; left:0; right:0; z-index:500;
-      display:flex; align-items:center; justify-content:space-between;
-      transition: box-shadow 0.4s, border-color 0.4s;
-    }
+    .navbar { background:rgba(5,8,16,0.82); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:0 3rem; height:70px; position:fixed; top:0; left:0; right:0; z-index:500; display:flex; align-items:center; justify-content:space-between; transition:box-shadow .4s,border-color .4s; }
     .navbar.scrolled { box-shadow:0 1px 0 var(--border-bright),0 8px 40px rgba(0,0,0,.6); border-bottom-color:var(--border-bright); }
     .navbar-brand { display:flex; align-items:center; gap:.75rem; text-decoration:none; }
     .navbar-logo  { width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid var(--border); transition:transform .3s var(--ease),border-color .3s; }
@@ -95,85 +80,62 @@
     .marquee-dot { width:3px; height:3px; background:var(--blue-bright); border-radius:50%; }
     @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-    /* COMMITTEES GRID */
-    .committees-section { max-width:1120px; margin:0 auto; padding:7rem 3rem; position:relative; z-index:2; }
+    /* PROJECTS SECTION */
+    .projects-section { max-width:1120px; margin:0 auto; padding:7rem 3rem; position:relative; z-index:2; }
     .section-label { display:flex; align-items:center; gap:1rem; margin-bottom:5rem; }
     .section-label-text { font-size:.68rem; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:rgba(200,216,232,.3); }
     .section-label-line { flex:1; height:1px; background:var(--border); }
 
-    .committees-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+    .projects-grid { display:flex; flex-direction:column; gap:1.5rem; }
 
-    /* COMMITTEE CARD */
-    .committee-card {
+    /* PROJECT CARD — photo left, text right (identical to committee card) */
+    .project-card {
+      display: grid;
+      grid-template-columns: 340px 1fr;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 2px;
-      padding: 3rem;
-      position: relative;
       overflow: hidden;
       opacity: 0; transform: translateY(40px);
       transition: box-shadow .5s var(--ease), transform .5s var(--ease), border-color .4s;
       cursor: default;
     }
-    .committee-card.visible { animation: cardIn .8s var(--ease) forwards; }
+    .project-card.visible { animation: cardIn .8s var(--ease) forwards; }
     @keyframes cardIn { to { opacity:1; transform:translateY(0); } }
-    .committee-card:hover { box-shadow: 0 0 0 1px var(--border-bright), 0 30px 80px rgba(0,0,0,.7); border-color:var(--border-bright); transform:translateY(-4px); }
+    .project-card:hover { box-shadow:0 0 0 1px var(--border-bright),0 30px 80px rgba(0,0,0,.7); border-color:var(--border-bright); transform:translateY(-4px); }
 
-    /* animated left accent bar */
-    .committee-card::before {
-      content:''; position:absolute; top:0; left:0; bottom:0; width:2px;
-      background: var(--blue-gleam);
-      transform: scaleY(0); transform-origin:bottom;
-      transition: transform .6s var(--ease);
-      box-shadow: 0 0 12px rgba(107,184,232,.4);
-    }
-    .committee-card:hover::before { transform:scaleY(1); }
+    .card-photo { position:relative; overflow:hidden; background:var(--abyss); min-height:320px; }
+    .card-photo img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 1s var(--ease),filter .6s; filter:saturate(0.5) brightness(0.65); }
+    .project-card:hover .card-photo img { transform:scale(1.06); filter:saturate(0.8) brightness(0.82); }
+    .card-photo-overlay { position:absolute; inset:0; background:linear-gradient(to right,rgba(5,8,16,0) 60%,rgba(17,22,32,0.9) 100%); }
+    .card-photo-placeholder { width:100%; height:100%; min-height:320px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.75rem; color:rgba(107,184,232,0.3); border-right:1px dashed rgba(59,130,196,0.18); }
+    .card-photo-placeholder i { font-size:2rem; }
+    .card-photo-placeholder span { font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; font-weight:500; }
+    .card-photo::after { content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(107,184,232,0.02) 2px,rgba(107,184,232,0.02) 3px); pointer-events:none; }
 
-    /* subtle grid-line bg texture */
-    .committee-card::after {
-      content:''; position:absolute; inset:0; pointer-events:none;
-      background: repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(59,130,196,.03) 79px,rgba(59,130,196,.03) 80px);
-    }
+    .card-body { padding:2.75rem 3rem; display:flex; flex-direction:column; justify-content:center; position:relative; }
+    .card-body::before { content:''; position:absolute; top:0; left:0; bottom:0; width:2px; background:var(--blue-gleam); transform:scaleY(0); transform-origin:bottom; transition:transform .6s var(--ease); box-shadow:0 0 12px rgba(107,184,232,.4); }
+    .project-card:hover .card-body::before { transform:scaleY(1); }
 
-    .card-icon {
-      width:48px; height:48px;
-      border:1px solid var(--border);
-      border-radius:6px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.35rem; color:var(--blue-gleam);
-      margin-bottom:1.75rem;
-      transition: border-color .3s, background .3s, color .3s;
-      position: relative; z-index:1;
-      background: rgba(107,184,232,0.06);
-    }
-    .committee-card:hover .card-icon { border-color:var(--blue-gleam); background:rgba(107,184,232,0.12); color:#E1306C; }
+    .card-number { font-size:.68rem; font-weight:500; letter-spacing:.15em; text-transform:uppercase; color:var(--blue-gleam); margin-bottom:.7rem; }
+    .card-title  { font-family:var(--serif); font-size:clamp(1.6rem,2.2vw,2.1rem); font-weight:600; line-height:1.1; color:#E8EFF8; margin-bottom:1rem; }
+    .card-rule   { width:24px; height:1px; background:var(--blue-bright); margin-bottom:1.25rem; transition:width .4s var(--ease); }
+    .project-card:hover .card-rule { width:44px; }
+    .card-desc   { font-size:.88rem; color:var(--silver-2); line-height:1.9; margin-bottom:1.75rem; flex:1; }
+    .placeholder { color:rgba(200,216,232,0.22); font-style:italic; }
 
-    .card-number { font-size:.68rem; font-weight:500; letter-spacing:.15em; text-transform:uppercase; color:var(--blue-gleam); margin-bottom:.7rem; position:relative; z-index:1; }
-    .card-title  { font-family:var(--serif); font-size:clamp(1.5rem,2.2vw,2rem); font-weight:600; line-height:1.1; color:#E8EFF8; margin-bottom:1rem; position:relative; z-index:1; }
-    .card-rule   { width:24px; height:1px; background:var(--blue-bright); margin-bottom:1.25rem; transition:width .4s var(--ease); position:relative; z-index:1; }
-    .committee-card:hover .card-rule { width:44px; }
-    .card-desc   { font-size:.9rem; color:var(--silver-2); line-height:1.9; margin-bottom:1.75rem; position:relative; z-index:1; }
-
-    .card-tags { display:flex; flex-wrap:wrap; gap:.4rem; position:relative; z-index:1; }
+    .card-tags { display:flex; flex-wrap:wrap; gap:.4rem; }
     .tag { font-size:.65rem; font-weight:500; letter-spacing:.1em; text-transform:uppercase; padding:.24rem .6rem; border-radius:2px; border:1px solid var(--border); color:var(--blue-gleam); background:rgba(59,130,196,.07); transition:background .2s,color .2s,border-color .2s; }
     .tag:hover { background:var(--blue-mid); border-color:var(--blue-bright); color:var(--silver); }
 
-    /* FEATURED / WIDE CARD — spans both columns */
-    .committee-card.wide { grid-column: 1 / -1; display:grid; grid-template-columns:auto 1fr; gap:3rem; align-items:start; }
-    .wide-left { display:flex; flex-direction:column; }
-
-    /* JOIN BAND */
-    .join-band {
-      background: var(--panel-2);
-      border-top:1px solid var(--border); border-bottom:1px solid var(--border);
-      padding:6rem 3rem; position:relative; z-index:2; overflow:hidden;
-    }
-    .join-band::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(59,130,196,.03) 80px,rgba(59,130,196,.03) 81px); pointer-events:none; }
-    .join-inner { max-width:1120px; margin:0 auto; position:relative; display:grid; grid-template-columns:1fr auto; align-items:center; gap:3rem; }
-    .join-headline { font-family:var(--serif); font-size:clamp(2rem,3.5vw,3.2rem); font-weight:600; line-height:1.08; color:#E8EFF8; }
-    .join-headline em { font-style:italic; color:var(--blue-gleam); }
-    .join-sub { font-size:.95rem; color:var(--silver-2); margin-top:.9rem; max-width:480px; line-height:1.8; }
-    .join-btns { display:flex; flex-direction:column; gap:.9rem; flex-shrink:0; }
+    /* CTA BAND */
+    .cta-band { background:var(--panel-2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:6rem 3rem; position:relative; z-index:2; overflow:hidden; }
+    .cta-band::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(59,130,196,.03) 80px,rgba(59,130,196,.03) 81px); pointer-events:none; }
+    .cta-inner { max-width:1120px; margin:0 auto; position:relative; display:grid; grid-template-columns:1fr auto; align-items:center; gap:3rem; }
+    .cta-headline { font-family:var(--serif); font-size:clamp(2rem,3.5vw,3.2rem); font-weight:600; line-height:1.08; color:#E8EFF8; }
+    .cta-headline em { font-style:italic; color:var(--blue-gleam); }
+    .cta-sub { font-size:.95rem; color:var(--silver-2); margin-top:.9rem; max-width:480px; line-height:1.8; }
+    .cta-btns { display:flex; flex-direction:column; gap:.9rem; flex-shrink:0; }
     .btn-primary { display:inline-flex; align-items:center; gap:.5rem; background:var(--blue-mid); color:var(--silver); font-size:.84rem; font-weight:500; padding:.85rem 1.6rem; border-radius:2px; text-decoration:none; border:1px solid var(--blue-bright); transition:background .25s,transform .2s,box-shadow .25s; letter-spacing:.04em; white-space:nowrap; }
     .btn-primary:hover { background:var(--blue-bright); transform:translateY(-2px); box-shadow:0 8px 30px rgba(59,130,196,.3); }
     .btn-outline { display:inline-flex; align-items:center; gap:.5rem; border:1px solid var(--border); color:var(--silver-2); font-size:.84rem; font-weight:500; padding:.85rem 1.6rem; border-radius:2px; text-decoration:none; transition:border-color .25s,color .25s,transform .2s; letter-spacing:.04em; white-space:nowrap; }
@@ -181,22 +143,18 @@
 
     /* FOOTER */
     footer { border-top:1px solid var(--border); padding:2.5rem 3rem; max-width:1120px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; position:relative; z-index:2; }
-    .footer-left { font-family:var(--serif); font-size:1rem; font-weight:600; color:#E8EFF8; }
-    .footer-left a { display:block; font-family:var(--sans); font-size:.8rem; color:var(--silver-2); text-decoration:none; margin-top:.25rem; transition:color .2s; }
-    .footer-left a:hover { color:var(--blue-gleam); }
-    .footer-right { display:flex; gap:.6rem; }
     .social-btn { width:34px; height:34px; border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--silver-2); text-decoration:none; font-size:.82rem; transition:border-color .2s,color .2s,transform .2s; }
     .social-btn:hover { border-color:var(--blue-gleam); color:var(--blue-gleam); transform:translateY(-2px); }
 
     @media(max-width:900px){
       .navbar{padding:0 1.5rem;} .navbar-links{display:none;}
       .hero{padding:8rem 1.5rem 4rem;}
-      .committees-section{padding:4rem 1.5rem;}
-      .committees-grid{grid-template-columns:1fr;}
-      .committee-card.wide{grid-template-columns:1fr;}
-      .join-band{padding:4rem 1.5rem;}
-      .join-inner{grid-template-columns:1fr;}
-      .join-btns{flex-direction:row;}
+      .projects-section{padding:4rem 1.5rem;}
+      .project-card{grid-template-columns:1fr;}
+      .card-photo{min-height:220px;} .card-photo-placeholder{min-height:220px;}
+      .cta-band{padding:4rem 1.5rem;}
+      .cta-inner{grid-template-columns:1fr;}
+      .cta-btns{flex-direction:row;}
       footer{padding:2rem 1.5rem;flex-direction:column;align-items:flex-start;}
       .cursor,.cursor-ring{display:none;}
     }
@@ -216,135 +174,141 @@
   </a>
   <ul class="navbar-links">
     <li><a href="../index.html">Home</a></li>
-    <li><a href="projects.html">Projects</a></li>
+    <li><a href="projects.html">Our Projects</a></li>
     <li><a href="committees.html">Committees</a></li>
-    <li><a href="board.html">Board</a></li>
-    <li><a href="donations.html" class="donate-btn">Donate &rarr;</a></li>
+    <li><a href="board.html">Meet the Board</a></li>
+    <li><a href="donations.html" class="donate-btn">Donations &rarr;</a></li>
   </ul>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-bg-text" aria-hidden="true">Teams</div>
-  <div class="hero-eyebrow">Organization</div>
-  <h1 class="hero-title">Our <em>Committees</em></h1>
-  <p class="hero-desc">Committees are the teams that turn ideas into action within Project RISHI. Each group focuses on a different part of the organization's mission. By working in smaller, dedicated teams, members can take ownership of projects, collaborate closely, and contribute their skills towards meaningful impact.</p>
+  <div class="hero-bg-text" aria-hidden="true">Projects</div>
+  <div class="hero-eyebrow">Our Work</div>
+  <h1 class="hero-title">Our <em>Projects</em></h1>
+  <p class="hero-desc">Project RISHI at UCI is committed to creating lasting change through our diverse campaigns and programs. While we maintain a clear mission, we employ a broad range of strategies to address critical issues within the South Asian community, including water sanitation, healthcare, and women's and community empowerment. Learn more about our initiatives and get involved yourself.</p>
 </section>
 
 <!-- MARQUEE -->
 <div class="marquee-wrap" aria-hidden="true">
   <div class="marquee-track">
-    <span class="marquee-item">Youth Education <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Reproductive Health <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Computer Literacy <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Clinical Health <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Community Impact <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Rural India Outreach <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Youth Education <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Reproductive Health <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Computer Literacy <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Clinical Health <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Community Impact <span class="marquee-dot"></span></span>
-    <span class="marquee-item">Rural India Outreach <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Water Sanitation <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Healthcare <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Women's Empowerment <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Community Empowerment <span class="marquee-dot"></span></span>
+    <span class="marquee-item">South Asian Community <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Lasting Change <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Water Sanitation <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Healthcare <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Women's Empowerment <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Community Empowerment <span class="marquee-dot"></span></span>
+    <span class="marquee-item">South Asian Community <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Lasting Change <span class="marquee-dot"></span></span>
   </div>
 </div>
 
-<!-- COMMITTEES -->
-<section class="committees-section">
+<!-- PROJECTS -->
+<main class="projects-section">
   <div class="section-label">
-    <span class="section-label-text">Active Committees</span>
+    <span class="section-label-text">Current Projects</span>
     <div class="section-label-line"></div>
   </div>
 
-  <div class="committees-grid">
+  <div class="projects-grid">
 
-    <!-- Youth Education -->
-    <article class="committee-card">
-      <div class="card-icon" aria-hidden="true"><i class="fa-brands fa-instagram"></i></div>
-      <div class="card-number">Committee 01</div>
-      <h2 class="card-title">Youth Education</h2>
-      <div class="card-rule"></div>
-      <p class="card-desc">The Project RISHI Youth Education Committee develops educational, leadership, and mentorship initiatives to create sustainable opportunities for youth in underserved communities in India and locally. Our work centers on drug‑abuse awareness, self‑defense education, and promoting access to learning. We currently aim to help UCI students understand the learning gaps faced by children in rural India and the broader challenges within the youth‑education landscape.</p>
-      <div class="card-tags">
-        <span class="tag">Mentorship</span>
-        <span class="tag">Drug Awareness</span>
-        <span class="tag">Self-Defense Ed</span>
-        <span class="tag">Rural India</span>
+    <!-- Project 01 -->
+    <article class="project-card">
+      <div class="card-photo">
+        <div class="card-photo-placeholder">
+          <i class="fa-regular fa-image"></i>
+          <span>Add photo</span>
+        </div>
+        <div class="card-photo-overlay"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-number">Project 01</div>
+        <h2 class="card-title placeholder">[ Project Name ]</h2>
+        <div class="card-rule"></div>
+        <p class="card-desc placeholder">[ Add your project description here. What does this initiative do? Who does it serve? What makes it meaningful? ]</p>
+        <div class="card-tags">
+          <span class="tag placeholder">[ Tag ]</span>
+          <span class="tag placeholder">[ Tag ]</span>
+          <span class="tag placeholder">[ Tag ]</span>
+        </div>
       </div>
     </article>
 
-    <!-- Reproductive Health -->
-    <article class="committee-card">
-      <div class="card-icon" aria-hidden="true"><i class="fa-brands fa-instagram"></i></div>
-      <div class="card-number">Committee 02</div>
-      <h2 class="card-title">Reproductive</h2>
-      <div class="card-rule"></div>
-      <p class="card-desc">In Reproductive Health, we address the biggest issues that surround women in this category by creating online workshops and pamphlets to educate everyone on basic tips that they should know. We also research the most common problems that rural women face without the proper facilities and look for ways to combat that. We do this by hosting community service events, such as donation drives to create hygiene kits with those items, online teaching workshops to discuss the basics of reproductive health with schools, and collaborating with other NGOs in Orange County, because these are issues that every woman must know of regardless of region. For us, the question isn't "how to save the village;" it is how to serve women everywhere according to their needs to make a bigger difference to our general community. We are always open to accepting new members who are just as enthusiastic about the cause as we are!</p>
-      <div class="card-tags">
-        <span class="tag">Workshops</span>
-        <span class="tag">Hygiene Kits</span>
-        <span class="tag">NGO Partnerships</span>
-        <span class="tag">Women's Health</span>
+    <!-- Project 02 -->
+    <article class="project-card">
+      <div class="card-photo">
+        <div class="card-photo-placeholder">
+          <i class="fa-regular fa-image"></i>
+          <span>Add photo</span>
+        </div>
+        <div class="card-photo-overlay"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-number">Project 02</div>
+        <h2 class="card-title placeholder">[ Project Name ]</h2>
+        <div class="card-rule"></div>
+        <p class="card-desc placeholder">[ Add your project description here. What does this initiative do? Who does it serve? What makes it meaningful? ]</p>
+        <div class="card-tags">
+          <span class="tag placeholder">[ Tag ]</span>
+          <span class="tag placeholder">[ Tag ]</span>
+          <span class="tag placeholder">[ Tag ]</span>
+        </div>
       </div>
     </article>
 
-    <!-- Computer Literacy -->
-    <article class="committee-card">
-      <div class="card-icon" aria-hidden="true"><i class="fa-brands fa-instagram"></i></div>
-      <div class="card-number">Committee 03</div>
-      <h2 class="card-title">Computer Literacy</h2>
-      <div class="card-rule"></div>
-      <p class="card-desc">The Project RISHI Computer Literacy Committee develops technology, digital-skills, and computer-education initiatives to create sustainable opportunities for underserved communities in India and locally. Our work centers on expanding access to digital resources, teaching foundational computer skills, and promoting technological literacy. We currently aim to help UCI students understand the digital divide faced by children and families in rural India and the broader challenges surrounding equitable access to technology.</p>
-      <div class="card-tags">
-        <span class="tag">Digital Skills</span>
-        <span class="tag">Tech Access</span>
-        <span class="tag">Digital Divide</span>
-        <span class="tag">Education</span>
+    <!-- Project 03 -->
+    <article class="project-card">
+      <div class="card-photo">
+        <div class="card-photo-placeholder">
+          <i class="fa-regular fa-image"></i>
+          <span>Add photo</span>
+        </div>
+        <div class="card-photo-overlay"></div>
       </div>
-    </article>
-
-    <!-- Clinical Health -->
-    <article class="committee-card">
-      <div class="card-icon" aria-hidden="true"><i class="fa-brands fa-instagram"></i></div>
-      <div class="card-number">Committee 04</div>
-      <h2 class="card-title">Clinical Health</h2>
-      <div class="card-rule"></div>
-      <p class="card-desc">The Clinical Health Committee focuses on promoting healthcare awareness and preventive care in underserved communities. Through education-based projects, we aim to provide accessible information on common health issues, encourage healthy habits, and support long-term well-being. Our goal is to empower individuals with the knowledge and resources they need to take charge of their health and prevent avoidable illnesses.</p>
-      <div class="card-tags">
-        <span class="tag">Preventive Care</span>
-        <span class="tag">Health Literacy</span>
-        <span class="tag">Wellness</span>
-        <span class="tag">Community Health</span>
+      <div class="card-body">
+        <div class="card-number">Project 03</div>
+        <h2 class="card-title placeholder">[ Project Name ]</h2>
+        <div class="card-rule"></div>
+        <p class="card-desc placeholder">[ Add your project description here. What does this initiative do? Who does it serve? What makes it meaningful? ]</p>
+        <div class="card-tags">
+          <span class="tag placeholder">[ Tag ]</span>
+          <span class="tag placeholder">[ Tag ]</span>
+          <span class="tag placeholder">[ Tag ]</span>
+        </div>
       </div>
     </article>
 
   </div>
-</section>
+</main>
 
-<!-- JOIN BAND -->
-<section class="join-band">
-  <div class="join-inner">
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="cta-inner">
     <div>
-      <h2 class="join-headline">Find your <em>committee.</em><br>Make your mark.</h2>
-      <p class="join-sub">We are always open to accepting new members who are just as enthusiastic about the cause as we are. Whether your passion is health, education, technology, or community organizing — there's a place for you.</p>
+      <h2 class="cta-headline">Get involved.<br>Make an <em>impact.</em></h2>
+      <p class="cta-sub">Project RISHI at UCI is committed to creating lasting change through our diverse campaigns and programs. Learn more about our initiatives and get involved yourself.</p>
     </div>
-    <div class="join-btns">
-      <a href="mailto:projectrishiucirvine@gmail.com" class="btn-primary">Get in touch &rarr;</a>
-      <a href="https://www.instagram.com/projectrishi.uci/" target="_blank" rel="noopener" class="btn-outline"><i class="fa-brands fa-instagram"></i> &nbsp;Follow us</a>
+    <div class="cta-btns">
+      <a href="committees.html" class="btn-primary">View Committees &rarr;</a>
+      <a href="https://www.instagram.com/projectrishi.uci/" target="_blank" rel="noopener" class="btn-outline"><i class="fa-brands fa-instagram"></i>&nbsp; Follow us</a>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-left" style="display:flex;align-items:center;gap:0.85rem;">
+  <div style="display:flex;align-items:center;gap:0.85rem;">
     <img src="https://d2g8igdw686xgo.cloudfront.net/101570623_1778358086153002_r.webp" alt="Project Rishi at UCI" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid rgba(59,130,196,0.25);">
     <div>
       <div style="font-family:var(--serif);font-size:1rem;font-weight:600;color:#E8EFF8;">Project Rishi at UCI</div>
-      <a href="mailto:projectrishiucirvine@gmail.com" style="display:block;font-size:.8rem;color:var(--silver-2);text-decoration:none;margin-top:.15rem;transition:color .2s;" onmouseover="this.style.color='var(--blue-gleam)'" onmouseout="this.style.color='var(--silver-2)'">projectrishiucirvine@gmail.com</a>
+      <a href="mailto:projectrishiucirvine@gmail.com" style="display:block;font-size:.8rem;color:var(--silver-2);text-decoration:none;margin-top:.15rem;" onmouseover="this.style.color='#6BB8E8'" onmouseout="this.style.color='var(--silver-2)'">projectrishiucirvine@gmail.com</a>
     </div>
   </div>
-  <div class="footer-right">
+  <div style="display:flex;gap:.6rem;">
     <a class="social-btn" href="https://www.instagram.com/projectrishi.uci/" target="_blank" rel="noopener" aria-label="Instagram">
       <i class="fa-brands fa-instagram"></i>
     </a>
@@ -352,104 +316,76 @@
 </footer>
 
 <script>
-// WATER SIMULATION (same engine as projects page)
-const canvas = document.getElementById('water-canvas');
-const ctx = canvas.getContext('2d');
-let W, H, t = 0;
-let mouseX = -9999, mouseY = -9999, lastMouseX = -9999, lastMouseY = -9999;
-let mouseVX = 0, mouseVY = 0;
-const disturbs = [];
-
-function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+const canvas=document.getElementById('water-canvas'),ctx=canvas.getContext('2d');
+let W,H,t=0,mouseX=-9999,mouseY=-9999,lastMouseX=-9999,lastMouseY=-9999,mouseVX=0,mouseVY=0;
+const disturbs=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
 resize();
-window.addEventListener('resize', resize, {passive:true});
-window.addEventListener('mousemove', e => {
-  mouseX = e.clientX; mouseY = e.clientY;
-  mouseVX = mouseX - lastMouseX; mouseVY = mouseY - lastMouseY;
-  lastMouseX = mouseX; lastMouseY = mouseY;
-}, {passive:true});
-
-const GW = [
-  { A:0.038, L:0.72, S:0.08, D:0.00, ph:0.00 },
-  { A:0.022, L:0.44, S:0.12, D:0.28, ph:1.30 },
-  { A:0.015, L:0.30, S:0.16, D:-.22, ph:2.70 },
-  { A:0.010, L:0.20, S:0.20, D:0.55, ph:0.80 },
-  { A:0.007, L:0.13, S:0.22, D:-.50, ph:4.10 },
-  { A:0.005, L:0.09, S:0.24, D:0.90, ph:1.90 },
-  { A:0.003, L:0.06, S:0.19, D:-.80, ph:3.40 },
-];
-function surfY(nx,time){ let s=0; for(const w of GW){const k=(Math.PI*2)/w.L; s+=w.A*Math.sin(k*(nx*Math.cos(w.D)+time*w.S)+w.ph);} return s; }
-function surfNX(nx,time){ let d=0; for(const w of GW){const k=(Math.PI*2)/w.L; d+=w.A*k*Math.cos(w.D)*Math.cos(k*(nx*Math.cos(w.D)+time*w.S)+w.ph);} return d; }
-function mouseDist(nx,ny,time){ const mx=mouseX/W,my=mouseY/H,dx=nx-mx,dy=ny-my,d2=dx*dx+dy*dy; if(d2>0.06)return 0; const spd=Math.sqrt(mouseVX*mouseVX+mouseVY*mouseVY),str=Math.min(spd*0.0006,0.022); return Math.exp(-d2*55)*str*Math.sin(d2*100-time*2.5); }
-function clickDist(nx,ny,time,disturbs){ let out=0; for(const d of disturbs){const age=time-d.t; if(age>4)continue; const dx=nx-d.x/W,dy=ny-d.y/H,dist=Math.sqrt(dx*dx+dy*dy),front=age*0.18,spread=0.02; const env=Math.exp(-Math.pow((dist-front)/spread,2)),decay=Math.exp(-age*1.1); out+=env*decay*0.016*Math.sin(dist*60-age*6);} return out; }
-
-const FOAM = Array.from({length:70},()=>({ x:Math.random(), baseY:0.10+Math.random()*0.80, sz:0.8+Math.random()*3.0, drift:(Math.random()-.5)*0.000055, speed:0.00008+Math.random()*0.00015, phase:Math.random()*Math.PI*2, alpha:0.06+Math.random()*0.16, stretch:2+Math.random()*5 }));
-const CAUSTICS = Array.from({length:12},()=>({ ox:Math.random(), oy:0.1+Math.random()*0.8, spd:0.18+Math.random()*0.25, ph:Math.random()*Math.PI*2, rBase:14+Math.random()*22 }));
-const LX=0.55, LY=-0.85;
-
+window.addEventListener('resize',resize,{passive:true});
+window.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;mouseVX=mouseX-lastMouseX;mouseVY=mouseY-lastMouseY;lastMouseX=mouseX;lastMouseY=mouseY;},{passive:true});
+const GW=[{A:.038,L:.72,S:.08,D:.00,ph:.00},{A:.022,L:.44,S:.12,D:.28,ph:1.30},{A:.015,L:.30,S:.16,D:-.22,ph:2.70},{A:.010,L:.20,S:.20,D:.55,ph:.80},{A:.007,L:.13,S:.22,D:-.50,ph:4.10},{A:.005,L:.09,S:.24,D:.90,ph:1.90},{A:.003,L:.06,S:.19,D:-.80,ph:3.40}];
+function surfY(nx,time){let s=0;for(const w of GW){const k=Math.PI*2/w.L;s+=w.A*Math.sin(k*(nx*Math.cos(w.D)+time*w.S)+w.ph);}return s;}
+function surfNX(nx,time){let d=0;for(const w of GW){const k=Math.PI*2/w.L;d+=w.A*k*Math.cos(w.D)*Math.cos(k*(nx*Math.cos(w.D)+time*w.S)+w.ph);}return d;}
+function mouseDist(nx,ny,time){const mx=mouseX/W,my=mouseY/H,dx=nx-mx,dy=ny-my,d2=dx*dx+dy*dy;if(d2>.06)return 0;const spd=Math.sqrt(mouseVX*mouseVX+mouseVY*mouseVY),str=Math.min(spd*.0006,.022);return Math.exp(-d2*55)*str*Math.sin(d2*100-time*2.5);}
+function clickDist(nx,ny,time,disturbs){let out=0;for(const d of disturbs){const age=time-d.t;if(age>4)continue;const dx=nx-d.x/W,dy=ny-d.y/H,dist=Math.sqrt(dx*dx+dy*dy),front=age*.18,spread=.02;const env=Math.exp(-Math.pow((dist-front)/spread,2)),decay=Math.exp(-age*1.1);out+=env*decay*.016*Math.sin(dist*60-age*6);}return out;}
+const FOAM=Array.from({length:70},()=>({x:Math.random(),baseY:.10+Math.random()*.80,sz:.8+Math.random()*3.0,drift:(Math.random()-.5)*.000055,speed:.00008+Math.random()*.00015,phase:Math.random()*Math.PI*2,alpha:.06+Math.random()*.16,stretch:2+Math.random()*5}));
+const CAUSTICS=Array.from({length:12},()=>({ox:Math.random(),oy:.1+Math.random()*.8,spd:.18+Math.random()*.25,ph:Math.random()*Math.PI*2,rBase:14+Math.random()*22}));
+const LX=.55,LY=-.85;
 function draw(){
-  ctx.clearRect(0,0,W,H);
-  t+=0.008;
-  for(let i=disturbs.length-1;i>=0;i--){ if(t-disturbs[i].t>5)disturbs.splice(i,1); }
-  const COLS=Math.ceil(W/2), LAYERS=7;
-  ctx.fillStyle='#030711'; ctx.fillRect(0,0,W,H);
+  ctx.clearRect(0,0,W,H);t+=.008;
+  for(let i=disturbs.length-1;i>=0;i--){if(t-disturbs[i].t>5)disturbs.splice(i,1);}
+  const COLS=Math.ceil(W/2),LAYERS=7;
+  ctx.fillStyle='#030711';ctx.fillRect(0,0,W,H);
   for(let r=0;r<LAYERS;r++){
-    const baseNY=0.08+r*0.13, ampScale=1.0-r*0.09, depthF=1.0-r/LAYERS;
+    const baseNY=.08+r*.13,ampScale=1.0-r*.09,depthF=1.0-r/LAYERS;
     const pts=[];
-    for(let i=0;i<=COLS;i++){
-      const nx=i/COLS;
-      pts.push({x:i*2, y:(baseNY+surfY(nx,t*(1-r*0.06))*ampScale+mouseDist(nx,baseNY,t)+clickDist(nx,baseNY,t,disturbs))*H});
-    }
-    ctx.beginPath(); ctx.moveTo(0,H);
-    for(const p of pts) ctx.lineTo(p.x,p.y);
-    ctx.lineTo(W,H); ctx.closePath();
+    for(let i=0;i<=COLS;i++){const nx=i/COLS;pts.push({x:i*2,y:(baseNY+surfY(nx,t*(1-r*.06))*ampScale+mouseDist(nx,baseNY,t)+clickDist(nx,baseNY,t,disturbs))*H});}
+    ctx.beginPath();ctx.moveTo(0,H);
+    for(const p of pts)ctx.lineTo(p.x,p.y);
+    ctx.lineTo(W,H);ctx.closePath();
     const grad=ctx.createLinearGradient(0,baseNY*H-80,0,H);
     const b0=Math.round(18+depthF*14),b1=Math.round(8+depthF*8);
-    grad.addColorStop(0,`rgba(4,${Math.round(8+depthF*10)},${b0},${0.55+depthF*0.12})`);
-    grad.addColorStop(0.4,`rgba(3,${Math.round(6+depthF*7)},${b1},${0.45+depthF*0.10})`);
-    grad.addColorStop(1,`rgba(2,4,8,${0.70+depthF*0.08})`);
-    ctx.fillStyle=grad; ctx.fill();
+    grad.addColorStop(0,`rgba(4,${Math.round(8+depthF*10)},${b0},${.55+depthF*.12})`);
+    grad.addColorStop(.4,`rgba(3,${Math.round(6+depthF*7)},${b1},${.45+depthF*.10})`);
+    grad.addColorStop(1,`rgba(2,4,8,${.70+depthF*.08})`);
+    ctx.fillStyle=grad;ctx.fill();
     ctx.beginPath();
-    for(let i=0;i<pts.length;i++){ if(i===0)ctx.moveTo(pts[i].x,pts[i].y); else ctx.lineTo(pts[i].x,pts[i].y); }
-    const nx2=surfNX(0.5,t*(1-r*0.06)),spec=Math.max(0,nx2*LX-LY*0.2),specBright=Math.min(1,Math.pow(spec,2.5)*3),specAlpha=(0.18+specBright*0.35)*depthF;
+    for(let i=0;i<pts.length;i++){if(i===0)ctx.moveTo(pts[i].x,pts[i].y);else ctx.lineTo(pts[i].x,pts[i].y);}
+    const nx2=surfNX(.5,t*(1-r*.06)),spec=Math.max(0,nx2*LX-LY*.2),specBright=Math.min(1,Math.pow(spec,2.5)*3),specAlpha=(.18+specBright*.35)*depthF;
     const sg=ctx.createLinearGradient(0,0,W,0);
-    sg.addColorStop(0,`rgba(120,180,240,${specAlpha*0.4})`); sg.addColorStop(0.3,`rgba(180,220,255,${specAlpha*0.9})`);
-    sg.addColorStop(0.55,`rgba(220,240,255,${specAlpha})`); sg.addColorStop(0.75,`rgba(170,215,255,${specAlpha*0.85})`);
-    sg.addColorStop(1,`rgba(110,170,230,${specAlpha*0.3})`);
-    ctx.strokeStyle=sg; ctx.lineWidth=Math.max(0.4,1.0-r*0.12); ctx.stroke();
+    sg.addColorStop(0,`rgba(120,180,240,${specAlpha*.4})`);sg.addColorStop(.3,`rgba(180,220,255,${specAlpha*.9})`);
+    sg.addColorStop(.55,`rgba(220,240,255,${specAlpha})`);sg.addColorStop(.75,`rgba(170,215,255,${specAlpha*.85})`);
+    sg.addColorStop(1,`rgba(110,170,230,${specAlpha*.3})`);
+    ctx.strokeStyle=sg;ctx.lineWidth=Math.max(.4,1.0-r*.12);ctx.stroke();
   }
   for(const f of FOAM){
-    f.x+=f.drift+f.speed; if(f.x>1.08)f.x=-0.08; if(f.x<-0.08)f.x=1.08;
-    const fy=(f.baseY+surfY(f.x,t*0.85)*0.65+clickDist(f.x,f.baseY,t,disturbs))*H,fx=f.x*W,pulse=0.75+0.25*Math.sin(t*0.8+f.phase);
-    ctx.save(); ctx.globalAlpha=f.alpha*pulse; ctx.fillStyle='rgba(160,210,240,1)';
-    ctx.beginPath(); ctx.ellipse(fx,fy,f.sz*f.stretch*pulse,f.sz*0.5*pulse,0.05,0,Math.PI*2); ctx.fill(); ctx.restore();
+    f.x+=f.drift+f.speed;if(f.x>1.08)f.x=-.08;if(f.x<-.08)f.x=1.08;
+    const fy=(f.baseY+surfY(f.x,t*.85)*.65+clickDist(f.x,f.baseY,t,disturbs))*H,fx=f.x*W,pulse=.75+.25*Math.sin(t*.8+f.phase);
+    ctx.save();ctx.globalAlpha=f.alpha*pulse;ctx.fillStyle='rgba(160,210,240,1)';
+    ctx.beginPath();ctx.ellipse(fx,fy,f.sz*f.stretch*pulse,f.sz*.5*pulse,.05,0,Math.PI*2);ctx.fill();ctx.restore();
   }
   ctx.save();
   for(const c of CAUSTICS){
-    const cx2=(c.ox+Math.sin(t*c.spd+c.ph)*0.12)*W, cy2=(c.oy+Math.cos(t*c.spd*0.7+c.ph)*0.06)*H, r2=c.rBase*(0.8+0.2*Math.sin(t*1.4+c.ph));
+    const cx2=(c.ox+Math.sin(t*c.spd+c.ph)*.12)*W,cy2=(c.oy+Math.cos(t*c.spd*.7+c.ph)*.06)*H,r2=c.rBase*(.8+.2*Math.sin(t*1.4+c.ph));
     const g=ctx.createRadialGradient(cx2,cy2,0,cx2,cy2,r2);
-    g.addColorStop(0,'rgba(59,130,196,0.07)'); g.addColorStop(0.5,'rgba(30,79,140,0.03)'); g.addColorStop(1,'rgba(10,40,90,0)');
-    ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(cx2,cy2,r2,r2*0.35,Math.sin(t*0.25+c.ph)*0.7,0,Math.PI*2); ctx.fill();
+    g.addColorStop(0,'rgba(59,130,196,0.07)');g.addColorStop(.5,'rgba(30,79,140,0.03)');g.addColorStop(1,'rgba(10,40,90,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(cx2,cy2,r2,r2*.35,Math.sin(t*.25+c.ph)*.7,0,Math.PI*2);ctx.fill();
   }
   ctx.restore();
   requestAnimationFrame(draw);
 }
 draw();
 
-document.addEventListener('click', e => {
+document.addEventListener('click',e=>{
   disturbs.push({x:e.clientX,y:e.clientY,t});
-  for(let i=0;i<2;i++){
-    const el=document.createElement('div'); el.className=i===0?'ripple':'ripple2';
-    const sz=i===0?90:160; el.style.cssText=`left:${e.clientX}px;top:${e.clientY}px;width:${sz}px;height:${sz}px`;
-    document.body.appendChild(el); setTimeout(()=>el.remove(),i===0?1400:2200);
-  }
+  for(let i=0;i<2;i++){const el=document.createElement('div');el.className=i===0?'ripple':'ripple2';const sz=i===0?90:160;el.style.cssText=`left:${e.clientX}px;top:${e.clientY}px;width:${sz}px;height:${sz}px`;document.body.appendChild(el);setTimeout(()=>el.remove(),i===0?1400:2200);}
 });
 
-const cursor=document.getElementById('cursor'), ring=document.getElementById('cursorRing');
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
 let cx=0,cy=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{ cx=e.clientX; cy=e.clientY; cursor.style.left=cx+'px'; cursor.style.top=cy+'px'; });
-(function loop(){ rx+=(cx-rx)*0.10; ry+=(cy-ry)*0.10; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(loop); })();
-document.querySelectorAll('a,button,.tag,.committee-card').forEach(el=>{
+document.addEventListener('mousemove',e=>{cx=e.clientX;cy=e.clientY;cursor.style.left=cx+'px';cursor.style.top=cy+'px';});
+(function loop(){rx+=(cx-rx)*.10;ry+=(cy-ry)*.10;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.tag,.project-card').forEach(el=>{
   el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
   el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
 });
@@ -457,10 +393,10 @@ document.querySelectorAll('a,button,.tag,.committee-card').forEach(el=>{
 const navbar=document.getElementById('navbar');
 window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',window.scrollY>30),{passive:true});
 
-const cards=document.querySelectorAll('.committee-card');
+const cards=document.querySelectorAll('.project-card');
 const obs=new IntersectionObserver(entries=>{
-  entries.forEach((e,i)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*130); obs.unobserve(e.target); } });
-},{threshold:0.1});
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*130);obs.unobserve(e.target);}});
+},{threshold:.1});
 cards.forEach(c=>obs.observe(c));
 </script>
 </body>
