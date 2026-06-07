@@ -1,159 +1,663 @@
 <!DOCTYPE html>
-<html class="has-navbar-fixed-top">
-
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Project Rishi at UCI</title>
-
-  <!-- Bulma CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>Projects — Project Rishi at UCI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Adamina&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet">
-
-  <!-- Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-social@3/css/all.min.css">
-  
-  <link rel="stylesheet" href="../style.css">
-  <link rel="icon" type="image/x-icon" href="../assets/rishi_logo.png">
+  <style>
+    :root {
+      --black:      #050810;
+      --black-2:    #0A0D18;
+      --black-3:    #0F1420;
+      --panel:      #111620;
+      --panel-2:    #161C2A;
+      --deep:       #041225;
+      --abyss:      #020A18;
+      --blue-bright:#3B82C4;
+      --blue-mid:   #1E4F8C;
+      --blue-dark:  #0E2A50;
+      --blue-gleam: #6BB8E8;
+      --silver:     #C8D8E8;
+      --silver-2:   #8AA4BC;
+      --silver-dim: rgba(200,216,232,0.08);
+      --border:     rgba(59,130,196,0.14);
+      --border-bright: rgba(107,184,232,0.3);
+      --serif:      'Cormorant Garamond', Georgia, serif;
+      --sans:       'DM Sans', sans-serif;
+      --ease:       cubic-bezier(0.16,1,0.3,1);
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body {
+      background: var(--black);
+      color: var(--silver);
+      font-family: var(--sans);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
 
+    /* ── WATER CANVAS ── */
+    #water-canvas {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
 
+    /* ── RIPPLE ── */
+    .ripple {
+      position: fixed; border-radius: 50%;
+      border: 1px solid rgba(107,184,232,0.4);
+      pointer-events: none; z-index: 1;
+      transform: translate(-50%,-50%) scale(0);
+      animation: rippleOut 1.4s var(--ease) forwards;
+    }
+    .ripple2 {
+      position: fixed; border-radius: 50%;
+      border: 1px solid rgba(107,184,232,0.18);
+      pointer-events: none; z-index: 1;
+      transform: translate(-50%,-50%) scale(0);
+      animation: rippleOut 2s 0.2s var(--ease) forwards;
+    }
+    @keyframes rippleOut { to { transform: translate(-50%,-50%) scale(1); opacity:0; } }
+
+    /* ── CURSOR ── */
+    .cursor { width:8px; height:8px; background:var(--blue-gleam); border-radius:50%; position:fixed; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
+    .cursor-ring { width:30px; height:30px; border:1px solid var(--blue-gleam); border-radius:50%; position:fixed; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); opacity:0.5; transition:width 0.3s,height 0.3s,opacity 0.2s,border-color 0.2s; }
+    body.hovering .cursor-ring { width:48px; height:48px; opacity:0.2; border-color:var(--silver); }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      background: rgba(5,8,16,0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 3rem; height: 70px;
+      position: fixed; top:0; left:0; right:0; z-index:500;
+      display:flex; align-items:center; justify-content:space-between;
+      transition: box-shadow 0.4s, border-color 0.4s;
+    }
+    .navbar.scrolled {
+      box-shadow: 0 1px 0 var(--border-bright), 0 8px 40px rgba(0,0,0,0.6);
+      border-bottom-color: var(--border-bright);
+    }
+    .navbar-brand { display:flex; align-items:center; gap:0.75rem; text-decoration:none; }
+    .navbar-logo { width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid var(--border); transition:transform 0.3s var(--ease),border-color 0.3s; }
+    .navbar-brand:hover .navbar-logo { transform:rotate(8deg) scale(1.06); border-color:var(--blue-gleam); }
+    .navbar-wordmark { font-family:var(--serif); font-size:1.1rem; font-weight:600; color:var(--silver); letter-spacing:0.02em; }
+    .navbar-links { display:flex; align-items:center; gap:0.1rem; list-style:none; }
+    .navbar-links a { font-size:0.84rem; color:var(--silver-2); text-decoration:none; padding:0.45rem 0.9rem; border-radius:4px; position:relative; transition:color 0.2s; letter-spacing:0.02em; }
+    .navbar-links a::after { content:''; position:absolute; bottom:5px; left:50%; right:50%; height:1px; background:var(--blue-gleam); transition:left 0.25s var(--ease),right 0.25s var(--ease); }
+    .navbar-links a:hover { color:var(--silver); }
+    .navbar-links a:hover::after { left:0.9rem; right:0.9rem; }
+    .navbar-links .donate-btn { background:var(--blue-mid); color:var(--silver) !important; padding:0.45rem 1.15rem; font-weight:500; border-radius:3px; border:1px solid var(--blue-bright); transition:background 0.25s,border-color 0.25s,transform 0.2s; }
+    .navbar-links .donate-btn::after { display:none; }
+    .navbar-links .donate-btn:hover { background:var(--blue-bright); border-color:var(--blue-gleam); transform:translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero { position:relative; z-index:2; padding:11rem 3rem 6rem; max-width:1120px; margin:0 auto; }
+    .hero-bg-text {
+      font-family:var(--serif);
+      font-size:clamp(90px,17vw,190px);
+      font-weight:600;
+      color:rgba(59,130,196,0.04);
+      position:absolute; top:4rem; left:-0.5rem;
+      line-height:1; pointer-events:none; user-select:none; letter-spacing:-0.04em;
+    }
+    .hero-eyebrow { display:inline-flex; align-items:center; gap:0.6rem; font-size:0.7rem; font-weight:500; letter-spacing:0.18em; text-transform:uppercase; color:var(--blue-gleam); margin-bottom:1.4rem; opacity:0; animation:fadeUp 0.8s 0.1s var(--ease) forwards; }
+    .hero-eyebrow::before { content:''; width:24px; height:1px; background:var(--blue-gleam); }
+    .hero-title { font-family:var(--serif); font-size:clamp(3.5rem,6.5vw,6.5rem); font-weight:600; line-height:1; letter-spacing:-0.02em; color:#E8EFF8; margin-bottom:1.75rem; opacity:0; animation:fadeUp 0.8s 0.22s var(--ease) forwards; }
+    .hero-title em { font-style:italic; color:var(--blue-gleam); }
+    .hero-desc { font-size:1.0625rem; color:var(--silver-2); max-width:560px; line-height:1.85; opacity:0; animation:fadeUp 0.8s 0.34s var(--ease) forwards; }
+    .hero-stats { display:flex; gap:3rem; margin-top:3.5rem; opacity:0; animation:fadeUp 0.8s 0.46s var(--ease) forwards; padding-top:2.5rem; border-top:1px solid var(--border); }
+    .stat-num { font-family:var(--serif); font-size:2.2rem; font-weight:600; color:#E8EFF8; line-height:1; }
+    .stat-label { font-size:0.75rem; color:var(--silver-2); letter-spacing:0.06em; text-transform:uppercase; margin-top:0.4rem; }
+    .stat-divider { width:1px; background:var(--border); align-self:stretch; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── WAVE SVG DIVIDERS ── */
+    .wave-divider { position:relative; z-index:2; line-height:0; }
+    .wave-divider svg { display:block; width:100%; }
+
+    /* ── MARQUEE ── */
+    .marquee-wrap { background:var(--panel); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:0.9rem 0; overflow:hidden; display:flex; position:relative; z-index:2; }
+    .marquee-track { display:flex; gap:2.5rem; animation:marquee 30s linear infinite; white-space:nowrap; will-change:transform; }
+    .marquee-wrap:hover .marquee-track { animation-play-state:paused; }
+    .marquee-item { font-family:var(--serif); font-size:1rem; font-style:italic; color:rgba(200,216,232,0.35); display:flex; align-items:center; gap:1.25rem; flex-shrink:0; letter-spacing:0.02em; }
+    .marquee-dot { width:3px; height:3px; background:var(--blue-bright); border-radius:50%; }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── PROJECTS ── */
+    .projects { max-width:1120px; margin:0 auto; padding:7rem 3rem; position:relative; z-index:2; }
+    .section-label { display:flex; align-items:center; gap:1rem; margin-bottom:5rem; }
+    .section-label-text { font-size:0.68rem; font-weight:500; letter-spacing:0.18em; text-transform:uppercase; color:rgba(200,216,232,0.3); }
+    .section-label-line { flex:1; height:1px; background:var(--border); }
+
+    /* ── PROJECT CARD ── */
+    .project-card {
+      display:grid; grid-template-columns:1fr 1fr;
+      border:1px solid var(--border); border-radius:2px;
+      overflow:hidden; background:var(--panel);
+      margin-bottom:1.5rem;
+      opacity:0; transform:translateY(40px);
+      transition:box-shadow 0.5s var(--ease), transform 0.5s var(--ease), border-color 0.4s;
+    }
+    .project-card.visible { animation:cardIn 0.8s var(--ease) forwards; }
+    @keyframes cardIn { to{opacity:1;transform:translateY(0)} }
+    .project-card:hover { box-shadow:0 0 0 1px var(--border-bright), 0 30px 80px rgba(0,0,0,0.7); border-color:var(--border-bright); transform:translateY(-5px); }
+    .project-card.reverse { direction:rtl; }
+    .project-card.reverse > * { direction:ltr; }
+
+    .card-image { position:relative; overflow:hidden; min-height:440px; background:var(--abyss); }
+    .card-image img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 1s var(--ease),filter 0.6s; filter:saturate(0.5) brightness(0.7); }
+    .project-card:hover .card-image img { transform:scale(1.07); filter:saturate(0.8) brightness(0.85); }
+    .card-image-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(5,8,16,0.8) 0%,rgba(5,8,16,0.3) 50%,transparent 75%); transition:opacity 0.5s; }
+    .project-card:hover .card-image-overlay { opacity:0.6; }
+
+    /* Scan-line shimmer on image */
+    .card-image::after { content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(107,184,232,0.025) 2px,rgba(107,184,232,0.025) 3px); pointer-events:none; }
+
+    .card-num-badge { position:absolute; top:1.5rem; left:1.5rem; font-family:var(--serif); font-size:0.75rem; font-weight:600; letter-spacing:0.12em; color:var(--silver-2); background:rgba(5,8,16,0.7); backdrop-filter:blur(8px); padding:0.28rem 0.65rem; border-radius:2px; border:1px solid var(--border); }
+
+    .card-content { padding:3.5rem; display:flex; flex-direction:column; justify-content:center; background:var(--panel); position:relative; }
+    .card-content::before { content:''; position:absolute; top:0; left:0; bottom:0; width:2px; background:var(--blue-gleam); transform:scaleY(0); transform-origin:bottom; transition:transform 0.6s var(--ease); box-shadow:0 0 12px rgba(107,184,232,0.4); }
+    .project-card:hover .card-content::before { transform:scaleY(1); }
+
+    .card-category { font-size:0.68rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--blue-gleam); margin-bottom:0.9rem; }
+    .card-title { font-family:var(--serif); font-size:clamp(1.7rem,2.5vw,2.4rem); font-weight:600; line-height:1.08; color:#E8EFF8; margin-bottom:1.25rem; }
+    .card-rule { width:28px; height:1px; background:var(--blue-bright); margin-bottom:1.5rem; transition:width 0.4s var(--ease); }
+    .project-card:hover .card-rule { width:52px; }
+    .card-desc { font-size:0.9rem; color:var(--silver-2); line-height:1.9; margin-bottom:2rem; flex:1; }
+
+    .placeholder-text { color:rgba(200,216,232,0.25); font-style:italic; }
+    .card-tags { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:2rem; }
+    .tag { font-size:0.67rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; padding:0.26rem 0.65rem; border-radius:2px; border:1px solid var(--border); color:var(--blue-gleam); background:rgba(59,130,196,0.07); transition:background 0.2s,color 0.2s,border-color 0.2s; cursor:default; }
+    .tag:hover { background:var(--blue-mid); border-color:var(--blue-bright); color:var(--silver); }
+
+    .card-cta { display:inline-flex; align-items:center; gap:0.55rem; font-size:0.82rem; font-weight:500; color:var(--silver-2); text-decoration:none; padding:0.6rem 0; border-bottom:1px solid rgba(200,216,232,0.2); width:fit-content; transition:color 0.25s,border-color 0.25s,gap 0.25s; letter-spacing:0.04em; }
+    .card-cta:hover { color:var(--blue-gleam); border-color:var(--blue-gleam); gap:0.9rem; }
+    .card-cta-arrow { transition:transform 0.25s; }
+    .card-cta:hover .card-cta-arrow { transform:translateX(4px); }
+
+    /* ── IMPACT BAND ── */
+    .impact-band { background:var(--panel-2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:6rem 3rem; position:relative; z-index:2; overflow:hidden; }
+    .impact-band::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(59,130,196,0.03) 80px,rgba(59,130,196,0.03) 81px); pointer-events:none; }
+    .impact-inner { max-width:1120px; margin:0 auto; position:relative; }
+    .impact-headline { font-family:var(--serif); font-size:clamp(2rem,4vw,3.5rem); font-weight:600; line-height:1.08; color:#E8EFF8; margin-bottom:3.5rem; max-width:520px; }
+    .impact-headline em { font-style:italic; color:var(--blue-gleam); }
+    .impact-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); }
+    .impact-cell { background:var(--panel-2); padding:2.5rem; transition:background 0.3s; cursor:default; }
+    .impact-cell:hover { background:rgba(59,130,196,0.08); }
+    .impact-big { font-family:var(--serif); font-size:clamp(2.5rem,5vw,4rem); font-weight:600; line-height:1; color:var(--blue-gleam); margin-bottom:0.6rem; }
+    .impact-label { font-size:0.85rem; color:var(--silver-2); line-height:1.65; }
+    .impact-placeholder { font-size:1.6rem; color:rgba(107,184,232,0.25); font-style:italic; margin-bottom:0.5rem; }
+
+    /* ── CTA ── */
+    .involve { max-width:1120px; margin:0 auto; padding:7rem 3rem; display:grid; grid-template-columns:1fr auto; align-items:center; gap:3rem; border-bottom:1px solid var(--border); position:relative; z-index:2; }
+    .involve-title { font-family:var(--serif); font-size:clamp(2rem,3.5vw,3rem); font-weight:600; line-height:1.08; color:#E8EFF8; }
+    .involve-title em { font-style:italic; color:var(--blue-gleam); }
+    .involve-btns { display:flex; gap:0.9rem; flex-shrink:0; }
+    .btn-primary { display:inline-flex; align-items:center; gap:0.5rem; background:var(--blue-mid); color:var(--silver); font-size:0.84rem; font-weight:500; padding:0.85rem 1.6rem; border-radius:2px; text-decoration:none; border:1px solid var(--blue-bright); transition:background 0.25s,transform 0.2s,box-shadow 0.25s; letter-spacing:0.04em; }
+    .btn-primary:hover { background:var(--blue-bright); transform:translateY(-2px); box-shadow:0 8px 30px rgba(59,130,196,0.3); }
+    .btn-outline { display:inline-flex; align-items:center; gap:0.5rem; border:1px solid var(--border); color:var(--silver-2); font-size:0.84rem; font-weight:500; padding:0.85rem 1.6rem; border-radius:2px; text-decoration:none; transition:border-color 0.25s,color 0.25s,transform 0.2s; letter-spacing:0.04em; }
+    .btn-outline:hover { border-color:var(--blue-gleam); color:var(--blue-gleam); transform:translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer { border-top:1px solid var(--border); padding:2.5rem 3rem; max-width:1120px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; position:relative; z-index:2; }
+    .footer-left { font-family:var(--serif); font-size:1rem; font-weight:600; color:#E8EFF8; }
+    .footer-left a { display:block; font-family:var(--sans); font-size:0.8rem; color:var(--silver-2); text-decoration:none; margin-top:0.25rem; transition:color 0.2s; }
+    .footer-left a:hover { color:var(--blue-gleam); }
+    .footer-right { display:flex; gap:0.6rem; }
+    .social-btn { width:34px; height:34px; border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--silver-2); text-decoration:none; font-size:0.82rem; transition:border-color 0.2s,color 0.2s,transform 0.2s; }
+    .social-btn:hover { border-color:var(--blue-gleam); color:var(--blue-gleam); transform:translateY(-2px); }
+
+    @media(max-width:900px){
+      .navbar{padding:0 1.5rem;}
+      .navbar-links{display:none;}
+      .hero{padding:8rem 1.5rem 4rem;}
+      .hero-stats{gap:2rem;}
+      .projects{padding:4rem 1.5rem;}
+      .project-card,.project-card.reverse{grid-template-columns:1fr;direction:ltr;}
+      .card-image{min-height:260px;}
+      .card-content{padding:2.25rem;}
+      .impact-band{padding:4rem 1.5rem;}
+      .impact-grid{grid-template-columns:1fr;gap:1px;}
+      .involve{grid-template-columns:1fr;padding:4rem 1.5rem;}
+      .involve-btns{flex-direction:column;}
+      footer{padding:2rem 1.5rem;flex-direction:column;align-items:flex-start;}
+      .cursor,.cursor-ring{display:none;}
+    }
+  </style>
 </head>
-
 <body>
-  <nav class="navbar is-spaced is-transparent is-fixed-top" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a href="../index.html">
-          <figure class="image is-96x96 is-rounded">
-            <img src="../assets/rishi_logo.png"></img>
-          </figure>
-        </a>
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
+
+<canvas id="water-canvas"></canvas>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a class="navbar-brand" href="../index.html">
+    <img class="navbar-logo" src="../assets/rishi_logo.png" alt="Project Rishi at UCI">
+    <span class="navbar-wordmark">Project Rishi</span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="committees.html">Committees</a></li>
+    <li><a href="board.html">Board</a></li>
+    <li><a href="donations.html" class="donate-btn">Donate &rarr;</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text" aria-hidden="true">Rishi</div>
+  <div class="hero-eyebrow">Our Work</div>
+  <h1 class="hero-title">Projects &amp;<br><em>Initiatives</em></h1>
+  <p class="hero-desc">Project Rishi at UCI drives lasting change across the South Asian community. Learn about our campaigns and get involved.</p>
+  <div class="hero-stats">
+    <div><div class="stat-num placeholder-text">——</div><div class="stat-label">Active campaigns</div></div>
+    <div class="stat-divider"></div>
+    <div><div class="stat-num placeholder-text">——</div><div class="stat-label">Lives reached</div></div>
+    <div class="stat-divider"></div>
+    <div><div class="stat-num placeholder-text">——</div><div class="stat-label">Partner regions</div></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-item">Water Sanitation <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Women Empowerment <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Healthcare Access <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Community Outreach <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Education <span class="marquee-dot"></span></span>
+    <span class="marquee-item">South Asian Communities <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Water Sanitation <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Women Empowerment <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Healthcare Access <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Community Outreach <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Education <span class="marquee-dot"></span></span>
+    <span class="marquee-item">South Asian Communities <span class="marquee-dot"></span></span>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<main class="projects">
+  <div class="section-label">
+    <span class="section-label-text">Current Projects</span>
+    <div class="section-label-line"></div>
+  </div>
+
+  <article class="project-card">
+    <div class="card-image">
+      <img src="https://placehold.co/800x600/041225/1E4F8C?text=Add+Image" alt="Project image">
+      <div class="card-image-overlay"></div>
+      <div class="card-num-badge">01</div>
+    </div>
+    <div class="card-content">
+      <div class="card-category placeholder-text">[ Add category ]</div>
+      <h2 class="card-title placeholder-text">[ Project Name ]</h2>
+      <div class="card-rule"></div>
+      <p class="card-desc placeholder-text">[ Add your project description here. What does this initiative do? Who does it serve? What makes it meaningful? ]</p>
+      <div class="card-tags">
+        <span class="tag placeholder-text">Tag 1</span>
+        <span class="tag placeholder-text">Tag 2</span>
+        <span class="tag placeholder-text">Tag 3</span>
       </div>
+      <a href="#" class="card-cta">Learn more <span class="card-cta-arrow">→</span></a>
+    </div>
+  </article>
 
-      <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-end">
-          <a class="navbar-item" href="../index.html">
-            Home
-          </a>
-
-          <a class="navbar-item" href="projects.html">
-            Our Projects
-          </a>
-
-            <a class="navbar-item" href="committees.html">
-              Committees
-            </a>
-
-          <a class="navbar-item" href="board.html">
-            Meet the Board
-          </a>
-
-          <a class="navbar-item" href="donations.html">
-            Donations
-          </a>
-        </div>
-
+  <article class="project-card reverse">
+    <div class="card-image">
+      <img src="https://placehold.co/800x600/041225/1E4F8C?text=Add+Image" alt="Project image">
+      <div class="card-image-overlay"></div>
+      <div class="card-num-badge">02</div>
+    </div>
+    <div class="card-content">
+      <div class="card-category placeholder-text">[ Add category ]</div>
+      <h2 class="card-title placeholder-text">[ Project Name ]</h2>
+      <div class="card-rule"></div>
+      <p class="card-desc placeholder-text">[ Add your project description here. What does this initiative do? Who does it serve? What makes it meaningful? ]</p>
+      <div class="card-tags">
+        <span class="tag placeholder-text">Tag 1</span>
+        <span class="tag placeholder-text">Tag 2</span>
+        <span class="tag placeholder-text">Tag 3</span>
       </div>
-    </nav>
-
-  <section class="section">
-    <div class="container mr-6 ml-6 pr-6 pl-6">
-      <h1 class="title is-size-1 pb-6">
-        Projects
-      </h1>
-    <h2 class="subtitle">
-        Project RISHI at UCI is committed to creating lasting change through our diverse campaigns and programs. While we
-        maintain a clear mission, we employ a broad range of strategies to address critical issues within the South Asian
-        community, including water sanitation, healthcare, and women's and community empowerment.
-    
-        Learn more about our initiatives and get involved yourself.
-      </h2>
+      <a href="#" class="card-cta">Learn more <span class="card-cta-arrow">→</span></a>
     </div>
-  </section>
-  <hr>
-  <section class="section is-medium">
-    <div class="fixed-grid">
-        <div class="grid">
-            <div class="cell">
-                <figure class="image is-skeleton">
-                    <img alt="Placeholder" src="https://placehold.co/500x500">
-                </figure>
-            </div>
-            <div class="cell is-flex is-align-items-center">
-                <div class="has-text-centered">
-                    <h1 class="title">Title of Project</h1>
-                    <hr>
-                    <p class="mt-6">
-                        Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-                        Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
-                        ut fermentum massa justo sit amet risus. Donec sed odio dui.
-                        Nullam quis risus eget urna mollis ornare vel eu leo.
-                        Cum sociis natoque penatibus et magnis dis parturient montes,
-                        nascetur ridiculus mus. Nullam id dolor id
-                        nibh ultricies vehicula ut id elit.
-                    </p>
-                </div>
-            </div>
+  </article>
 
-
-            <div class="cell is-flex is-align-items-center">
-                <div class="has-text-centered">
-                    <h1 class="title">Title of Project</h1>
-                    <hr>
-                    <p class="mt-6">
-                        Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-                        Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
-                        ut fermentum massa justo sit amet risus. Donec sed odio dui.
-                        Nullam quis risus eget urna mollis ornare vel eu leo.
-                        Cum sociis natoque penatibus et magnis dis parturient montes,
-                        nascetur ridiculus mus. Nullam id dolor id
-                        nibh ultricies vehicula ut id elit.
-                    </p>
-                </div>
-            </div>
-            <div class="cell">
-                <figure class="image is-skeleton">
-                    <img alt="Placeholder" src="https://placehold.co/500x500">
-                </figure>
-            </div>
-
-        </div>
+  <article class="project-card">
+    <div class="card-image">
+      <img src="https://placehold.co/800x600/041225/1E4F8C?text=Add+Image" alt="Project image">
+      <div class="card-image-overlay"></div>
+      <div class="card-num-badge">03</div>
     </div>
-  </section>
-
-
-  <footer class="footer is-flex is-flex-direction-row is-justify-content-center">
-    <div class="content has-text-centered">
-      <div class="columns is-flex is-flex-direction-row is-justify-content-center is-align-items-center">
-        <div class="column is-size-5">
-          <strong>Project Rishi at UCI</strong>
-          <br>
-          <a class="has-text-white is-size-6" href="mailto:projectrishiucirvine@gmail.com">projectrishiucirvine@gmail.com</a>
-        </div>
-        <div class="column">
-          <a class="button is-instagram is-outlined is-inverted" href="https://www.instagram.com/projectrishi.uci/">
-            <span class="icon">
-              <i class="fa-brands fa-instagram fa-lg"></i>
-            </span>
-          </a>
-        </div>
-        </div>
+    <div class="card-content">
+      <div class="card-category placeholder-text">[ Add category ]</div>
+      <h2 class="card-title placeholder-text">[ Project Name ]</h2>
+      <div class="card-rule"></div>
+      <p class="card-desc placeholder-text">[ Add your project description here. What does this initiative do? Who does it serve? What makes it meaningful? ]</p>
+      <div class="card-tags">
+        <span class="tag placeholder-text">Tag 1</span>
+        <span class="tag placeholder-text">Tag 2</span>
+        <span class="tag placeholder-text">Tag 3</span>
+      </div>
+      <a href="#" class="card-cta">Learn more <span class="card-cta-arrow">→</span></a>
     </div>
-  </footer>
-  <script src="../navbar.js"></script>
+  </article>
+</main>
+
+<!-- IMPACT -->
+<section class="impact-band">
+  <div class="impact-inner">
+    <h2 class="impact-headline">Making change you can <em>measure</em></h2>
+    <div class="impact-grid">
+      <div class="impact-cell"><div class="impact-placeholder">[ stat ]</div><div class="impact-label">[ Add a real impact metric here ]</div></div>
+      <div class="impact-cell"><div class="impact-placeholder">[ stat ]</div><div class="impact-label">[ Add a real impact metric here ]</div></div>
+      <div class="impact-cell"><div class="impact-placeholder">[ stat ]</div><div class="impact-label">[ Add a real impact metric here ]</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="involve">
+  <h2 class="involve-title">Ready to make an <em>impact</em> with us?</h2>
+  <div class="involve-btns">
+    <a href="committees.html" class="btn-primary">Join a committee &rarr;</a>
+    <a href="donations.html" class="btn-outline">Donate</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    Project Rishi at UCI
+    <a href="mailto:projectrishiucirvine@gmail.com">projectrishiucirvine@gmail.com</a>
+  </div>
+  <div class="footer-right">
+    <a class="social-btn" href="https://www.instagram.com/projectrishi.uci/" aria-label="Instagram">
+      <i class="fa-brands fa-instagram"></i>
+    </a>
+  </div>
+</footer>
+
+<script>
+// ── DEEP WATER SIMULATION ──
+// Uses superimposed Gerstner waves at very slow speeds,
+// per-pixel depth shading, specular highlights, foam streaks, and caustics.
+const canvas = document.getElementById('water-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, t = 0;
+let mouseX = -9999, mouseY = -9999, lastMouseX = -9999, lastMouseY = -9999;
+let mouseVX = 0, mouseVY = 0;
+
+// Disturbance points from clicks/mouse drag
+const disturbs = [];
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize, {passive:true});
+
+window.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  mouseVX = mouseX - lastMouseX;
+  mouseVY = mouseY - lastMouseY;
+  lastMouseX = mouseX; lastMouseY = mouseY;
+}, {passive:true});
+
+// Gerstner wave trains — very slow speeds (S < 0.25)
+const GW = [
+  { A:0.038, L:0.72, S:0.08, D:0.00, ph:0.00 },
+  { A:0.022, L:0.44, S:0.12, D:0.28, ph:1.30 },
+  { A:0.015, L:0.30, S:0.16, D:-0.22,ph:2.70 },
+  { A:0.010, L:0.20, S:0.20, D:0.55, ph:0.80 },
+  { A:0.007, L:0.13, S:0.22, D:-0.50,ph:4.10 },
+  { A:0.005, L:0.09, S:0.24, D:0.90, ph:1.90 },
+  { A:0.003, L:0.06, S:0.19, D:-0.80,ph:3.40 },
+];
+
+function surfY(nx, time) {
+  let s = 0;
+  for (const w of GW) {
+    const k = (Math.PI * 2) / w.L;
+    s += w.A * Math.sin(k * (nx * Math.cos(w.D) + time * w.S) + w.ph);
+  }
+  return s;
+}
+
+function surfNX(nx, time) {
+  let d = 0;
+  for (const w of GW) {
+    const k = (Math.PI * 2) / w.L;
+    d += w.A * k * Math.cos(w.D) * Math.cos(k * (nx * Math.cos(w.D) + time * w.S) + w.ph);
+  }
+  return d;
+}
+
+// Mouse-driven ripple distortion
+function mouseDist(nx, ny, time) {
+  const mx = mouseX / W, my = mouseY / H;
+  const dx = nx - mx, dy = ny - my;
+  const d2 = dx*dx + dy*dy;
+  if (d2 > 0.06) return 0;
+  const speed = Math.sqrt(mouseVX*mouseVX + mouseVY*mouseVY);
+  const str = Math.min(speed * 0.0006, 0.022);
+  return Math.exp(-d2 * 55) * str * Math.sin(d2 * 100 - time * 2.5);
+}
+
+// Click disturbance rings
+function clickDist(nx, ny, time, disturbs) {
+  let out = 0;
+  for (const d of disturbs) {
+    const age = time - d.t;
+    if (age > 4) continue;
+    const dx = nx - d.x / W, dy = ny - d.y / H;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const front = age * 0.18; // wave travels outward
+    const spread = 0.02;
+    const envelope = Math.exp(-Math.pow((dist - front) / spread, 2));
+    const decay = Math.exp(-age * 1.1);
+    out += envelope * decay * 0.016 * Math.sin(dist * 60 - age * 6);
+  }
+  return out;
+}
+
+// Foam streaks
+const FOAM = Array.from({length:70}, () => ({
+  x: Math.random(),
+  baseY: 0.10 + Math.random() * 0.80,
+  sz: 0.8 + Math.random() * 3.0,
+  drift: (Math.random() - 0.5) * 0.000055,
+  speed: 0.00008 + Math.random() * 0.00015,
+  phase: Math.random() * Math.PI * 2,
+  alpha: 0.06 + Math.random() * 0.16,
+  stretch: 2 + Math.random() * 5,
+}));
+
+// Caustic blobs
+const CAUSTICS = Array.from({length:12}, () => ({
+  ox: Math.random(),
+  oy: 0.1 + Math.random() * 0.8,
+  spd: 0.18 + Math.random() * 0.25,
+  ph: Math.random() * Math.PI * 2,
+  rBase: 14 + Math.random() * 22,
+}));
+
+const LX = 0.55, LY = -0.85; // sun direction (normalized)
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  t += 0.008; // very slow tick
+
+  // Prune old disturbances
+  for (let i = disturbs.length - 1; i >= 0; i--) {
+    if (t - disturbs[i].t > 5) disturbs.splice(i, 1);
+  }
+
+  const COLS = Math.ceil(W / 2);
+  const LAYERS = 7;
+
+  // Background fill: near-black abyss
+  ctx.fillStyle = '#030711';
+  ctx.fillRect(0, 0, W, H);
+
+  for (let r = 0; r < LAYERS; r++) {
+    const baseNY = 0.08 + r * 0.13;
+    const ampScale = 1.0 - r * 0.09;
+    const depthF = 1.0 - r / LAYERS;
+
+    // Build wave path
+    const pts = [];
+    for (let i = 0; i <= COLS; i++) {
+      const nx = i / COLS;
+      const sy  = surfY(nx, t * (1 - r * 0.06));
+      const md  = mouseDist(nx, baseNY, t);
+      const cd  = clickDist(nx, baseNY, t, disturbs);
+      const ny  = baseNY + sy * ampScale + md + cd;
+      pts.push({ x: i * 2, y: ny * H });
+    }
+
+    // Fill below wave
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    for (const p of pts) ctx.lineTo(p.x, p.y);
+    ctx.lineTo(W, H);
+    ctx.closePath();
+
+    // Color: very dark navy → near-black with slight blue tint per depth
+    const grad = ctx.createLinearGradient(0, baseNY * H - 80, 0, H);
+    const b0 = Math.round(18 + depthF * 14); // blue channel at top
+    const b1 = Math.round(8  + depthF * 8);
+    grad.addColorStop(0,   `rgba(4,${Math.round(8+depthF*10)},${b0},${0.55 + depthF*0.12})`);
+    grad.addColorStop(0.4, `rgba(3,${Math.round(6+depthF*7)},${b1},${0.45 + depthF*0.10})`);
+    grad.addColorStop(1,   `rgba(2,4,8,${0.70 + depthF*0.08})`);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Specular glint line on crest
+    ctx.beginPath();
+    for (let i = 0; i < pts.length; i++) {
+      if (i === 0) ctx.moveTo(pts[i].x, pts[i].y);
+      else ctx.lineTo(pts[i].x, pts[i].y);
+    }
+    // compute average specular for this row
+    const nx2 = surfNX(0.5, t * (1 - r * 0.06));
+    const spec = Math.max(0, nx2 * LX - LY * 0.2);
+    const specBright = Math.min(1, Math.pow(spec, 2.5) * 3);
+    const specAlpha = (0.18 + specBright * 0.35) * depthF;
+    const sg = ctx.createLinearGradient(0, 0, W, 0);
+    sg.addColorStop(0,    `rgba(120,180,240,${specAlpha * 0.4})`);
+    sg.addColorStop(0.3,  `rgba(180,220,255,${specAlpha * 0.9})`);
+    sg.addColorStop(0.55, `rgba(220,240,255,${specAlpha})`);
+    sg.addColorStop(0.75, `rgba(170,215,255,${specAlpha * 0.85})`);
+    sg.addColorStop(1,    `rgba(110,170,230,${specAlpha * 0.3})`);
+    ctx.strokeStyle = sg;
+    ctx.lineWidth = Math.max(0.4, 1.0 - r * 0.12);
+    ctx.stroke();
+  }
+
+  // Foam streaks that ride surface
+  for (const f of FOAM) {
+    f.x += f.drift + f.speed;
+    if (f.x > 1.08) f.x = -0.08;
+    if (f.x < -0.08) f.x = 1.08;
+    const sy = surfY(f.x, t * 0.85);
+    const cd = clickDist(f.x, f.baseY, t, disturbs);
+    const fy = (f.baseY + sy * 0.65 + cd) * H;
+    const fx = f.x * W;
+    const pulse = 0.75 + 0.25 * Math.sin(t * 0.8 + f.phase);
+    ctx.save();
+    ctx.globalAlpha = f.alpha * pulse;
+    ctx.fillStyle = `rgba(160,210,240,1)`;
+    ctx.beginPath();
+    ctx.ellipse(fx, fy, f.sz * f.stretch * pulse, f.sz * 0.5 * pulse, 0.05, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Caustic light patches (subsurface scattering feel)
+  ctx.save();
+  for (const c of CAUSTICS) {
+    const cx2 = (c.ox + Math.sin(t * c.spd + c.ph) * 0.12) * W;
+    const cy2 = (c.oy + Math.cos(t * c.spd * 0.7 + c.ph) * 0.06) * H;
+    const r2 = c.rBase * (0.8 + 0.2 * Math.sin(t * 1.4 + c.ph));
+    const g = ctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, r2);
+    g.addColorStop(0,   'rgba(59,130,196,0.07)');
+    g.addColorStop(0.5, 'rgba(30,79,140,0.03)');
+    g.addColorStop(1,   'rgba(10,40,90,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(cx2, cy2, r2, r2 * 0.35, Math.sin(t * 0.25 + c.ph) * 0.7, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  requestAnimationFrame(draw);
+}
+draw();
+
+// ── CLICK DISTURBANCE ──
+document.addEventListener('click', e => {
+  disturbs.push({ x: e.clientX, y: e.clientY, t });
+  // DOM ripples
+  for (let i = 0; i < 2; i++) {
+    const el = document.createElement('div');
+    el.className = i === 0 ? 'ripple' : 'ripple2';
+    const sz = i === 0 ? 90 : 160;
+    el.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:${sz}px;height:${sz}px`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), i === 0 ? 1400 : 2200);
+  }
+});
+
+// ── CURSOR ──
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursorRing');
+let cx = 0, cy = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  cx = e.clientX; cy = e.clientY;
+  cursor.style.left = cx + 'px'; cursor.style.top = cy + 'px';
+});
+(function loop() {
+  rx += (cx - rx) * 0.10;
+  ry += (cy - ry) * 0.10;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a,button,.tag,.impact-cell').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+});
+
+// ── NAVBAR ──
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 30);
+}, {passive:true});
+
+// ── CARD REVEAL ──
+const cards = document.querySelectorAll('.project-card');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 130);
+      obs.unobserve(e.target);
+    }
+  });
+}, {threshold:0.1});
+cards.forEach(c => obs.observe(c));
+</script>
 </body>
-
 </html>
